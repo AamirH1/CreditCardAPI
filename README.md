@@ -1,6 +1,6 @@
 Credit Card Application
 
-It's n small credit card rest api aplication which allows you to add new credit card accounts and view them as a list.
+It's a small credit card rest api aplication which allows you to add new credit card accounts and view them as a list. Luhn algorithm is used for card validation.
 
 Steps to Setup
 ===============
