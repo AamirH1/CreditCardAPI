@@ -1,6 +1,6 @@
 Credit Card Application
 
-It's an small credit card rest api aplication which allows youto add new credit card accounts and view them as a list.
+It's n small credit card rest api aplication which allows you to add new credit card accounts and view them as a list.
 
 Steps to Setup
 ===============
