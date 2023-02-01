@@ -1,13 +1,15 @@
 {
   "name": "creditcardapi",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "small app to add and view credit card details",
+  "main": "server.js",
+  "directories": {
+    "lib": "lib"
+  },
   "scripts": {
     "test": "nyc mocha test/**.js --exit --timeout=120000",
     "start": "node server.js"
   },
-  "keywords": [],
   "author": "Aamir Hussain",
   "license": "ISC",
   "dependencies": {
