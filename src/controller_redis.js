@@ -1,27 +1,27 @@
-const Mongo = require('../utilities/MongoDB');
+const Redis_cli = require('../utilities/Redis');
 
-const mongo_cli = new Mongo();
-let mongo_databse;
 
+let redis_client = new Redis_cli();
+let redis_cli;
 class RequestHandler {
     constructor() {
-        mongo_databse = mongo_cli.connectDB('CardDetails');
+        redis_cli = redis_client.connect_redis();
     }
     async addNewCreditCard(reqBody) {
         try {
-            const database = await mongo_databse;
 
             //validating credit card
             let is_valid = await this.validateCard(reqBody);
+            console.log('is_valid:',is_valid);
             if (!is_valid) {
-                return { Error: 'Card Number validation Failed', status: 401 };
+                return { response: 'Card Number validation Failed', status: 401 };
             }
-
+            let cardNumber = reqBody.cardNumber;
             //check if card already exists
-            let is_exists = await database.find({ cardNumber: reqBody.cardNumber }).toArray();
+            let is_exists = await redis_cli.get(`creditCardNumber_${cardNumber}`);
             console.log("Is_exists", is_exists);
 
-            if (is_exists.length > 0) {
+            if (is_exists && is_exists.length > 0) {
                 return { response: 'Card Number already exists.', status: 201 };
             }
 
@@ -30,16 +30,35 @@ class RequestHandler {
             reqBody.cardLimit = `£` + (reqBody.cardLimit).toString();
 
 
-            await database.insertOne(reqBody);
-            /*fs.writeFileSync(jsonFile, JSON.stringify(jsonData))*/
-            return { response: 'Card Details added', status: 200 };
+            const result = await redis_cli.set(`creditCardNumber_${cardNumber}`, JSON.stringify(reqBody));
+            console.log("Result", result)
+            //return { response: 'Card Details added', status: 200,result:reqBody };
+            return { response: reqBody, status: 200 };
         } catch (error) {
-            console.log(error);
+            console.log(error)
         }
     }
 
+    async getAllCreditCard() {
+        try {
+            let jsonData = [];
+            const keys = await redis_cli.keys('*');
+            console.log("Keyss", keys);
+            for (let i = 0; i < keys.length; i++) {
+                let rediscli_val = await redis_cli.get(keys[i]);
+                jsonData.push(JSON.parse(rediscli_val));
+            }
+            if (jsonData.length == 0) {
+                return { response: "No Data Available." };
+            }
+            return jsonData;
+        } catch (error) {
+            console.log("Error", error);
+        }
+    }
+    
     async validateCard(reqBody) {
-        //validating card number with luhn NPM package
+        //validating card number with luhn algorithm
         console.log("Validating through luhn algorithm");
         let cardNumber_tovalidate = reqBody.cardNumber;
         let alternate_digits = 0;
@@ -59,17 +78,6 @@ class RequestHandler {
         return true;
     }
 
-    async getAllCreditCard() {
-        try {
-
-            const database = await mongo_databse;
-            let findResult = await database.find({}).toArray();
-
-            return findResult;
-        } catch (error) {
-            console.log("Error", error);
-        }
-    }
 }
 
 module.exports = RequestHandler;

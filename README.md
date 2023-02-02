@@ -16,3 +16,17 @@ Steps to Setup
 
 You can browse the api at http://localhost:3000
 Home: http://localhost:3000/home
+
+
+Payload for testing:
+    {
+        "cardNumber": 1358954993914435,
+        "cardHolderName": "Roy",
+        "cardLimit": "1000"
+    },
+    {
+        "cardNumber": 12345674,
+        "cardHolderName": "Jim",
+        "cardLimit": "1000"
+    }
+    }

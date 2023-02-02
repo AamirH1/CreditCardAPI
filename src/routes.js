@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const Validator = require('../lib/joiValidation');
-const RequestHandler = require('./controllers');
+//const RequestHandler = require('./controllers'); for mongodb
+const RequestHandler = require('./controller_redis'); // for redis
+
 
 const joiValidation = new Validator();
 const requestHandler = new RequestHandler();
@@ -18,7 +20,7 @@ router.post('/addNewCreditCard', async(req, res) => {
     }
 
     const result = await requestHandler.addNewCreditCard(req.body);
-    res.status(result.status).send(result);
+    res.status(result.status).send(result.response);
 })
 
 router.get('/getAllCreditCard', async(req, res) => {
@@ -26,5 +28,6 @@ router.get('/getAllCreditCard', async(req, res) => {
     const result = await requestHandler.getAllCreditCard(req.body);
     res.send(result);
 })
+
 
 module.exports = router
