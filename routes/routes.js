@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Validator = require('../lib/joiValidation');
-//const RequestHandler = require('./controllers'); for mongodb
-const RequestHandler = require('./controller_redis'); // for redis
+//const RequestHandler = require('../src/controllers'); for mongodb
+const RequestHandler = require('../src/controller_redis'); // for redis
 
 
 const joiValidation = new Validator();
